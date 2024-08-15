@@ -3,38 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page with Widget</title>
+    <title>Today's Weather - Cambridge, MA</title>
     <style>
-        /* Add any custom styles here */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .widget-container {
+            display: inline-block;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .widget-container img {
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
-    <!-- Your main content goes here -->
-
-    <!-- Widget script and HTML -->
-    <script>
-        (function(d, s, id) {
-            if (d.getElementById(id)) {
-                if (window.__TOMORROW__) {
-                    window.__TOMORROW__.renderWidget();
+    <h1>Today's Weather in Cambridge, MA</h1>
+    
+    <!-- Widget Container -->
+    <div class="widget-container">
+        <script>
+            (function(d, s, id) {
+                if (d.getElementById(id)) {
+                    if (window.__TOMORROW__) {
+                        window.__TOMORROW__.renderWidget();
+                    }
+                    return;
                 }
-                return;
-            }
-            const fjs = d.getElementsByTagName(s)[0];
-            const js = d.createElement(s);
-            js.id = id;
-            js.src = "https://www.tomorrow.io/v1/widget/sdk/sdk.bundle.min.js";
-
-            fjs.parentNode.insertBefore(js, fjs);
-        })(document, 'script', 'tomorrow-sdk');
-    </script>
-    <div class="tomorrow"
-        data-location-id="275057"
-        data-language="EN"
-        data-unit-system="IMPERIAL"
-        data-skin="light"
-        style="padding-bottom:22px;position:relative;">
+                const fjs = d.getElementsByTagName(s)[0];
+                const js = d.createElement(s);
+                js.id = id;
+                js.src = "https://www.tomorrow.io/v1/widget/sdk/sdk.bundle.min.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            })(document, 'script', 'tomorrow-sdk');
+        </script>
+        <div class="tomorrow"
+            data-location-id="275057" <!-- Location ID for Cambridge, MA -->
+            data-language="EN"
+            data-unit-system="IMPERIAL"
+            data-skin="light"
+            data-widget-type="currentWeather"
+            style="padding-bottom:22px;position:relative;">
+            <a
+                href="https://www.tomorrow.io/weather-api/"
+                rel="nofollow noopener noreferrer"
+                target="_blank"
+                style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;">
+                <img
+                    alt="Powered by the Tomorrow.io Weather API"
+                    src="https://weather-website-client.tomorrow.io/img/powered-by.svg"
+                    width="250"
+                    height="18" />
+            </a>
+        </div>
     </div>
 </body>
 </html>
-
