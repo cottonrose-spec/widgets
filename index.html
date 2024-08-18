@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .weather-widget {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        .weather-widget h2 {
+            margin: 0 0 10px;
+        }
+        .weather-widget p {
+            margin: 5px 0;
+        }
+        .weather-widget select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .weather-widget .temp {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .weather-widget img {
+            width: 64px;
+            height: 64px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-widget">
+        <h2>Weather Widget</h2>
+        <select id="locationSelect">
+            <option value="Cambridge, MA">Cambridge, MA</option>
+            <option value="Boston, MA">Boston, MA</option>
+            <option value="New York, NY">New York, NY</option>
+            <!-- Add more locations as needed -->
+        </select>
+        <div id="weatherData">
+            <img id="weatherIcon" src="" alt="Weather icon">
+            <p id="condition">Condition: --</p>
+            <p class="temp" id="temperature">--°F</p>
+            <p id="humidity">Humidity: --%</p>
+            <p id="feelsLike">Feels Like: --°F</p>
+        </div>
+        <p id="updateStatus">Last updated: Never</p>
+    </div>
+    
+    <script>
+        const apiKey = '8f22f64a65b6489191d225944241808'; // Replace with your WeatherAPI key
+        const weatherUrl = 'https://api.weatherapi.com/v1/current.json';
 
+        async function fetchWeather(location) {
+            const url = `${weatherUrl}?key=${apiKey}&q=${location}&aqi=no`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorDetails = await response.text(); // Get error response details
+                    throw new Error(`HTTP error! status: ${response.status}, details: ${errorDetails}`);
+                }
+                const data = await response.json();
+                console.log('Weather data:', data); // Log data for debugging
+                updateWeatherDisplay(data);
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                alert('Failed to fetch weather data. Check console for details.');
+            }
+        }
+
+        function updateWeatherDisplay(data) {
+            const temperatureElem = document.getElementById('temperature');
+            const humidityElem = document.getElementById('humidity');
+            const feelsLikeElem = document.getElementById('feelsLike');
+            const conditionElem = document.getElementById('condition');
+            const weatherIconElem = document.getElementById('weatherIcon');
+            const updateStatusElem = document.getElementById('updateStatus');
+
+            if (data && data.current) {
+                temperatureElem.textContent = `${Math.round(data.current.temp_f)}°F`;
+                humidityElem.textContent = `Humidity: ${data.current.humidity}%`;
+                feelsLikeElem.textContent = `Feels Like: ${Math.round(data.current.feelslike_f)}°F`;
+                conditionElem.textContent = `Condition: ${data.current.condition.text}`;
+                weatherIconElem.src = `https:${data.current.condition.icon}`;
+                updateStatusElem.textContent = `Last updated: ${data.current.last_updated}`;
+            } else {
+                console.error('Invalid data structure:', data);
+                alert('Received invalid data structure. Check console for details.');
+            }
+        }
+
+        function updateWeather() {
+            const location = document.getElementById('locationSelect').value;
+            fetchWeather(location);
+        }
+
+        document.getElementById('locationSelect').addEventListener('change', updateWeather);
+
+        // Initial fetch
+        updateWeather();
+
+        // Update every hour
+        setInterval(updateWeather, 3600000);
+    </script>
+</body>
+</html>
